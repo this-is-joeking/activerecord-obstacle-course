@@ -43,6 +43,7 @@ RSpec.configure do |config|
     @user_1 = create(:user, name: 'Zoolander')
     @user_2 = create(:user, name: 'Hansel')
     @user_3 = create(:user, name: 'Mugatu')
+    @user_4 = create(:user, name: 'Billy Zane')
 
     # # DO NOT CHANGE THE ORDER OF THIS DATA TO MAKE TESTS PASS
     @item_1  = create(:item, name: 'Abercrombie')
