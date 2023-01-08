@@ -28,6 +28,11 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    # require 'pry'; binding.pry
+    users = User.distinct.joins(:orders, :order_items).where('item_id = ?', @item_8.id).pluck(:name)
+
+    # OR
+    users = User.distinct.joins(:orders).joins(:items).where('item_id = ?', @item_8.id).pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -38,11 +43,13 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
     expected_result = ['Abercrombie', 'Giorgio Armani', 'J.crew', 'Fox']
 
     # ----------------------- Using Ruby -------------------------
-    names = Order.last.items.all.map(&:name)
+    # names = Order.last.items.all.map(&:name)
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+
+    names = Order.last.items.pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -67,6 +74,13 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    
+    # solution they are looking for
+    # require 'pry'; binding.pry
+    items_for_user_3_third_order = Order.where(user_id: @user_3).third.items.pluck(:name)
+
+    # Solution using AR associations
+    # items_for_user_3_third_order = @user_3.orders.third.items.pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -75,11 +89,14 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
 
   it '19. returns the average amount for all orders' do
     # ---------------------- Using Ruby -------------------------
-    average = (Order.all.map(&:amount).inject(:+)) / (Order.count)
+    # average = (Order.all.map(&:amount).inject(:+)) / (Order.count)
     # -----------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    average = Order.average(:amount)
+
+
     # ------------------------------------------------------------
 
     # Expectation
@@ -92,11 +109,16 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
       order if order.user_id == @user_3.id
     end.select{|i| !i.nil?}
     
-    average = (orders.map(&:amount).inject(:+)) / (orders.count)
+    # average = (orders.map(&:amount).inject(:+)) / (orders.count)
     # -----------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    average = @user_3.orders.average(:amount)
+    # OR
+
+    average = Order.joins(:user).where('users.id = ?', @user_3).average(:amount) #this has an unnessecary joins could be done using user_id row on the orders table
+    average = Order.where(user_id: @user_3.id).average(:amount)
     # ------------------------------------------------------------
 
     # Expectation
